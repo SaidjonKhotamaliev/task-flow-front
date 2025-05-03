@@ -36,7 +36,7 @@ const Signup = () => {
       const user = new UserService();
       const result = await user.signup(signupInput);
       setAuthMember(result);
-      navigate("/board/getMyBoards");
+      navigate("/board/my-boards");
       sweetTopSuccessAlert("Succesfully created!");
     } catch (err) {
       navigate("/user/signup");
@@ -44,7 +44,7 @@ const Signup = () => {
     }
   };
   const handleNavigationLogin = async () => {
-    navigate(`${process.env.REACT_APP_API_URL}/user/login`);
+    navigate(`/user/login`);
   };
 
   return (
@@ -55,15 +55,15 @@ const Signup = () => {
       <Stack>
         <h2>Signup</h2>
         <input
-          placeholder="userName"
+          placeholder="USERNAME"
           onChange={(e) => setUserName(e.target.value)}
         />
         <input
-          placeholder="userEmail"
+          placeholder="EMAIL"
           onChange={(e) => setUserEmail(e.target.value)}
         />
         <input
-          placeholder="userPassword"
+          placeholder="PASSWORD"
           type="password"
           onChange={(e) => setUserPassword(e.target.value)}
         />

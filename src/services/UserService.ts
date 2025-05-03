@@ -12,7 +12,7 @@ class UserService {
   public async signup(input: UserInput): Promise<User> {
     try {
       const url = `${this.path}/user/signup`;
-      const result = await axios.post(url, input); // no need for withCredentials here
+      const result = await axios.post(url, input);
 
       const { accessToken, ...user } = result.data;
       localStorage.setItem("accessToken", accessToken);
@@ -29,13 +29,14 @@ class UserService {
   public async login(input: LoginInput): Promise<User> {
     try {
       const url = `${this.path}/user/login`;
-      const result = await axios.post(url, input, { withCredentials: true });
-      console.log("login, result: ", result);
+      const result = await axios.post(url, input);
 
-      const member: User = result.data.member;
-      console.log("login, member: ", member);
-      localStorage.setItem("memberData", JSON.stringify(member));
-      return member;
+      const { accessToken, ...user } = result.data;
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+      return user;
     } catch (err) {
       console.log("Error, login: ", err);
       throw err;
