@@ -13,7 +13,7 @@ class BoardService {
     };
   }
 
-  async getMyBoards(): Promise<Board[]> {
+  public async getMyBoards(): Promise<Board[]> {
     const response = await axios.get(
       `${this.API_URL}/my-boards`,
       this.getAuthHeaders()
@@ -21,7 +21,7 @@ class BoardService {
     return response.data;
   }
 
-  async createBoard(boardTitle: string): Promise<Board> {
+  public async createBoard(boardTitle: string): Promise<Board> {
     const response = await axios.post(
       `${this.API_URL}/createBoard`,
       { boardTitle },
@@ -30,11 +30,20 @@ class BoardService {
     return response.data;
   }
 
-  async deleteBoard(boardId: string): Promise<void> {
+  public async deleteBoard(boardId: string): Promise<void> {
     await axios.delete(
       `${this.API_URL}/deleteBoard/${boardId}`,
       this.getAuthHeaders()
     );
+  }
+
+  public async updateBoard(boardId: string, newTitle: string): Promise<Board> {
+    const response = await axios.post(
+      `${this.API_URL}/updateBoard`,
+      { _id: boardId, boardTitle: newTitle },
+      this.getAuthHeaders()
+    );
+    return response.data;
   }
 }
 

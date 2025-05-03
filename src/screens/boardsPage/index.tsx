@@ -6,6 +6,8 @@ import { Stack } from "@mui/material";
 const BoardsScreen: React.FC = () => {
   const [boards, setBoards] = useState<Board[]>([]);
   const [newTitle, setNewTitle] = useState("");
+  const [editingBoardId, setEditingBoardId] = useState<string | null>(null);
+  const [newBoardTitle, setNewBoardTitle] = useState<string>("");
 
   const fetchBoards = async () => {
     try {
@@ -17,13 +19,39 @@ const BoardsScreen: React.FC = () => {
   };
 
   const handleCreate = async () => {
-    if (!newTitle.trim()) return;
     try {
       const board = await boardService.createBoard(newTitle);
       setBoards((prev) => [...prev, board]);
       setNewTitle("");
     } catch (err) {
       console.error("Create error:", err);
+    }
+  };
+
+  const handleEditClick = (board: Board) => {
+    setEditingBoardId(board._id);
+    setNewBoardTitle(board.boardTitle);
+  };
+
+  const handleUpdate = async () => {
+    if (!editingBoardId || !newBoardTitle.trim()) return;
+
+    try {
+      const updatedBoard = await boardService.updateBoard(
+        editingBoardId,
+        newBoardTitle.trim()
+      );
+      setBoards((prev) =>
+        prev.map((b) =>
+          b._id === editingBoardId
+            ? { ...b, boardTitle: updatedBoard.boardTitle }
+            : b
+        )
+      );
+      setEditingBoardId(null);
+      setNewBoardTitle("");
+    } catch (err) {
+      console.error("Update error:", err);
     }
   };
 
@@ -59,8 +87,27 @@ const BoardsScreen: React.FC = () => {
         ) : (
           boards.map((board) => (
             <li key={board._id}>
-              {board.boardTitle}
-              <button onClick={() => handleDelete(board._id)}>Delete</button>
+              {editingBoardId === board._id ? (
+                <>
+                  <input
+                    type="text"
+                    value={newBoardTitle}
+                    onChange={(e) => setNewBoardTitle(e.target.value)}
+                  />
+                  <button onClick={handleUpdate}>Save</button>
+                  <button onClick={() => setEditingBoardId(null)}>
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <>
+                  {board.boardTitle}
+                  <button onClick={() => handleEditClick(board)}>Edit</button>
+                  <button onClick={() => handleDelete(board._id)}>
+                    Delete
+                  </button>
+                </>
+              )}
             </li>
           ))
         )}
