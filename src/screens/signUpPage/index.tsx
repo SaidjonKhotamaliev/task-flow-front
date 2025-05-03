@@ -31,24 +31,17 @@ const Signup = () => {
         userPassword: userPassword,
       };
 
+      console.log("+", signupInput);
+
       const user = new UserService();
       const result = await user.signup(signupInput);
       setAuthMember(result);
-      //   handleSignupClose();
       navigate("/board/getMyBoards");
-
       sweetTopSuccessAlert("Succesfully created!");
     } catch (err) {
-      //   handleSignupClose();
+      navigate("/user/signup");
       sweetErrorHandling(err).then();
     }
-
-    // try {
-    //   await signup({ email, password });
-    //   navigate("/login");
-    // } catch (err) {
-    //   alert("Signup failed");
-    // }
   };
   const handleNavigationLogin = async () => {
     navigate(`${process.env.REACT_APP_API_URL}/user/login`);

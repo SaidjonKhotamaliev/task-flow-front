@@ -12,15 +12,16 @@ class UserService {
   public async signup(input: UserInput): Promise<User> {
     try {
       const url = `${this.path}/user/signup`;
-      const result = await axios.post(url, input, { withCredentials: true });
-      console.log("signup, result: ", result);
+      const result = await axios.post(url, input); // no need for withCredentials here
 
-      const member: User = result.data.member;
-      console.log("signup, member: ", member);
-      localStorage.setItem("memberData", JSON.stringify(member));
-      return member;
+      const { accessToken, ...user } = result.data;
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+      return user;
     } catch (err) {
-      console.log("Error, signup: ", err);
+      console.error("Error during signup:", err);
       throw err;
     }
   }
