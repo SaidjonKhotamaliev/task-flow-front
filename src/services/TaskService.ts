@@ -54,7 +54,14 @@ class TaskService {
   }
 
   public async deleteTask(taskId: string) {
-    const response = await axios.delete(`/task/deleteTask/${taskId}`, {
+    const url = `http://localhost:3001/task/deleteTask/${taskId}`;
+
+    const accessToken = localStorage.getItem("accessToken");
+
+    const response = await axios.delete(url, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
       withCredentials: true,
     });
     return response.data;
