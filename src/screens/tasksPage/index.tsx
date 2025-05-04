@@ -18,8 +18,6 @@ const Tasks: React.FC = () => {
   const [taskTitle, setTaskTitle] = useState("");
 
   const getTasks = async () => {
-    console.log("+boardId", boardId);
-
     try {
       if (boardId) {
         const fetchedTasks = await taskService.getTasksByBoardId(boardId);
@@ -59,7 +57,9 @@ const Tasks: React.FC = () => {
     taskId: string,
     newPriority: TaskPriority
   ) => {
-    // await taskService.updateTask(taskId, { taskPriority: newPriority });
+    const input: TaskUpdate = { _id: taskId, taskPriority: newPriority };
+    console.log(input);
+    await taskService.updateTask(input);
     getTasks();
   };
 
@@ -87,7 +87,7 @@ const Tasks: React.FC = () => {
     };
 
     return (
-      <div>
+      <div key={task._id}>
         <div>
           <div
             key={task._id}

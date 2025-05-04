@@ -4,8 +4,6 @@ import { Task, TaskInput, TaskUpdate } from "../libs/types/task";
 class TaskService {
   public async getTasksByBoardId(boardId: string): Promise<Task[]> {
     try {
-      console.log("Requesting tasks for boardId:", boardId);
-
       const url = `http://localhost:3001/task/getMyTasks?boardId=${encodeURIComponent(
         boardId
       )}`;
