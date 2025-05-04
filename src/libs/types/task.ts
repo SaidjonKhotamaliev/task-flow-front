@@ -5,8 +5,8 @@ export interface TaskInput {
   taskDesc: string;
   taskStatus?: TaskStatus;
   taskPriority: TaskPriority;
-  taskDueDate: string;
-  boardId: string;
+  taskDueDate: Date | null;
+  boardId: string | null;
 }
 
 export interface TaskUpdate {

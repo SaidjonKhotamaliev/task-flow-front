@@ -9,7 +9,6 @@ class TaskService {
       const url = `http://localhost:3001/task/getMyTasks?boardId=${encodeURIComponent(
         boardId
       )}`;
-      console.log("Requesting tasks from:", url);
 
       const accessToken = localStorage.getItem("accessToken");
 
@@ -27,7 +26,16 @@ class TaskService {
   }
 
   public async createTask(input: TaskInput) {
-    const response = await axios.post(`/task/createTask`, input, {
+    console.log("+", input);
+
+    const url = `http://localhost:3001/task/createTask`;
+
+    const accessToken = localStorage.getItem("accessToken");
+
+    const response = await axios.post(url, input, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
       withCredentials: true,
     });
     return response.data;

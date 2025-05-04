@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-// import { TaskService } from "../../services/taskService";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Task, TaskInput, TaskUpdate } from "../../libs/types/task";
 import { taskService } from "../../services/TaskService";
@@ -11,9 +10,12 @@ const Tasks: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [searchParams] = useSearchParams();
   const boardId = searchParams.get("boardId");
-  const [description, setDescription] = useState("");
-  const [dueDate, setDueDate] = useState("");
-  const [priority, setPriority] = useState("low");
+  const [taskDesc, setTaskDesc] = useState("");
+  const [taskDueDate, setTaskDueDate] = useState<Date | null>(null);
+  const [taskPriority, setTaskPriority] = useState<TaskPriority>(
+    TaskPriority.LOW_PRIORITY
+  );
+  const [taskTitle, setTaskTitle] = useState("");
 
   const getTasks = async () => {
     console.log("+boardId", boardId);
@@ -29,18 +31,19 @@ const Tasks: React.FC = () => {
   };
 
   const createTaskInput = {
-    boardId: "6815d921d3288f73d7d4f0ac",
-    taskPriority: TaskPriority.HIGHEST_PRIORITY,
-    taskDesc: "sdfawfdsfwdsa",
-    taskDueDate: "2025-05-04T12:30:00.000Z",
-    taskTitle: "fwad",
+    boardId: boardId,
+    taskPriority: taskPriority,
+    taskDesc: taskDesc,
+    taskDueDate: taskDueDate,
+    taskTitle: taskTitle,
   };
   const handleCreateTask = async () => {
-    if (!description || !dueDate) return;
+    if (!taskDesc || !taskDueDate) return;
     await taskService.createTask(createTaskInput);
-    setDescription("");
-    setDueDate("");
-    setPriority("low");
+    setTaskTitle("");
+    setTaskDesc("");
+    setTaskDueDate(null);
+    setTaskPriority(TaskPriority.LOW_PRIORITY);
     getTasks();
   };
 
@@ -86,88 +89,96 @@ const Tasks: React.FC = () => {
           <div style={{ padding: 20 }}>
             <h2>Create New Task</h2>
             <input
+              placeholder="Title"
+              value={taskTitle}
+              onChange={(e) => setTaskTitle(e.target.value)}
+              style={{ marginRight: 8 }}
+            />
+            <input
               placeholder="Description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              value={taskDesc}
+              onChange={(e) => setTaskDesc(e.target.value)}
               style={{ marginRight: 8 }}
             />
             <input
               type="datetime-local"
-              value={dueDate}
-              onChange={(e) => setDueDate(e.target.value)}
+              value={taskDueDate ? taskDueDate.toISOString().slice(0, 16) : ""}
+              onChange={(e) => setTaskDueDate(new Date(e.target.value))}
               style={{ marginRight: 8 }}
             />
             <select
-              value={priority}
-              onChange={(e) => setPriority(e.target.value)}
-            >
-              <option value="low">low</option>
-              <option value="medium">medium</option>
-              <option value="high">high</option>
-              <option value="highest">highest</option>
-            </select>
-            <button onClick={handleCreateTask} style={{ marginLeft: 8 }}>
-              Create Task
-            </button>
-          </div>
-        )}
-        <div
-          key={task._id}
-          style={{
-            background: "#fff",
-            borderRadius: 8,
-            padding: 12,
-            marginBottom: 10,
-            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-          }}
-        >
-          <span
-            style={{
-              background: priorityColors[task.taskPriority],
-              color: "#fff",
-              padding: "2px 6px",
-              fontSize: 12,
-              borderRadius: 4,
-              marginBottom: 6,
-              display: "inline-block",
-            }}
-          >
-            {task.taskPriority} priority
-          </span>
-
-          <p style={{ margin: "8px 0" }}>{task.taskDesc}</p>
-
-          <div style={{ fontSize: 12, color: "#555", marginBottom: 8 }}>
-            📅 {new Date(task.taskDueDate).toLocaleDateString()} &nbsp; ⏰{" "}
-            {new Date(task.taskDueDate).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          </div>
-
-          <div style={{ display: "flex", gap: 8 }}>
-            <select
-              value={task.taskStatus}
-              onChange={(e) =>
-                handleStatusChange(task._id, e.target.value as TaskStatus)
-              }
-            >
-              <option value={TaskStatus.TODO}>TODO</option>
-              <option value={TaskStatus.IN_PROGRESS}>IN PROGRESS</option>
-              <option value={TaskStatus.COMPLETED}>COMPLETED</option>
-            </select>
-            <select
-              value={task.taskPriority}
-              onChange={(e) =>
-                handlePriorityChange(task._id, e.target.value as TaskPriority)
-              }
+              value={taskPriority}
+              onChange={(e) => setTaskPriority(e.target.value as TaskPriority)}
             >
               <option value={TaskPriority.LOW_PRIORITY}>low</option>
               <option value={TaskPriority.MEDIUM_PRIORITY}>medium</option>
               <option value={TaskPriority.HIGH_PRIORITY}>high</option>
               <option value={TaskPriority.HIGHEST_PRIORITY}>highest</option>
             </select>
-            <button onClick={() => handleDeleteTask(task._id)}>🗑️</button>
+            <button onClick={handleCreateTask} style={{ marginLeft: 8 }}>
+              Create Task
+            </button>
+          </div>
+        )}
+        <div>
+          <div
+            key={task._id}
+            style={{
+              background: "#fff",
+              borderRadius: 8,
+              padding: 12,
+              marginBottom: 10,
+              boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            }}
+          >
+            <span
+              style={{
+                background: priorityColors[task.taskPriority],
+                color: "#fff",
+                padding: "2px 6px",
+                fontSize: 12,
+                borderRadius: 4,
+                marginBottom: 6,
+                display: "inline-block",
+              }}
+            >
+              {task.taskPriority} priority
+            </span>
+            <h2 style={{ margin: "8px 0" }}>{task.taskTitle}</h2>
+            <p style={{ margin: "8px 0" }}>{task.taskDesc}</p>
+
+            <div style={{ fontSize: 12, color: "#555", marginBottom: 8 }}>
+              📅 {new Date(task.taskDueDate).toLocaleDateString()} &nbsp; ⏰{" "}
+              {new Date(task.taskDueDate).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </div>
+
+            <div style={{ display: "flex", gap: 8 }}>
+              <select
+                value={task.taskStatus}
+                onChange={(e) =>
+                  handleStatusChange(task._id, e.target.value as TaskStatus)
+                }
+              >
+                <option value={TaskStatus.TODO}>TODO</option>
+                <option value={TaskStatus.IN_PROGRESS}>IN PROGRESS</option>
+                <option value={TaskStatus.COMPLETED}>COMPLETED</option>
+              </select>
+              <select
+                value={task.taskPriority}
+                onChange={(e) =>
+                  handlePriorityChange(task._id, e.target.value as TaskPriority)
+                }
+              >
+                <option value={TaskPriority.LOW_PRIORITY}>low</option>
+                <option value={TaskPriority.MEDIUM_PRIORITY}>medium</option>
+                <option value={TaskPriority.HIGH_PRIORITY}>high</option>
+                <option value={TaskPriority.HIGHEST_PRIORITY}>highest</option>
+              </select>
+              <button onClick={() => handleDeleteTask(task._id)}>🗑️</button>
+            </div>
           </div>
         </div>
       </div>
