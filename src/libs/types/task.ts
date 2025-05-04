@@ -10,6 +10,7 @@ export interface TaskInput {
 }
 
 export interface TaskUpdate {
+  _id: string;
   taskTitle?: string;
   taskDesc?: string;
   taskStatus?: TaskStatus;

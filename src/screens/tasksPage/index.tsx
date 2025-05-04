@@ -48,7 +48,10 @@ const Tasks: React.FC = () => {
   };
 
   const handleStatusChange = async (taskId: string, newStatus: TaskStatus) => {
-    await taskService.updateTask(taskId, { taskStatus: newStatus });
+    const input: TaskUpdate = { _id: taskId, taskStatus: newStatus };
+    console.log(input);
+
+    await taskService.updateTask(input);
     getTasks();
   };
 
@@ -56,7 +59,7 @@ const Tasks: React.FC = () => {
     taskId: string,
     newPriority: TaskPriority
   ) => {
-    await taskService.updateTask(taskId, { taskPriority: newPriority });
+    // await taskService.updateTask(taskId, { taskPriority: newPriority });
     getTasks();
   };
 
@@ -85,41 +88,6 @@ const Tasks: React.FC = () => {
 
     return (
       <div>
-        {boardId && (
-          <div style={{ padding: 20 }}>
-            <h2>Create New Task</h2>
-            <input
-              placeholder="Title"
-              value={taskTitle}
-              onChange={(e) => setTaskTitle(e.target.value)}
-              style={{ marginRight: 8 }}
-            />
-            <input
-              placeholder="Description"
-              value={taskDesc}
-              onChange={(e) => setTaskDesc(e.target.value)}
-              style={{ marginRight: 8 }}
-            />
-            <input
-              type="datetime-local"
-              value={taskDueDate ? taskDueDate.toISOString().slice(0, 16) : ""}
-              onChange={(e) => setTaskDueDate(new Date(e.target.value))}
-              style={{ marginRight: 8 }}
-            />
-            <select
-              value={taskPriority}
-              onChange={(e) => setTaskPriority(e.target.value as TaskPriority)}
-            >
-              <option value={TaskPriority.LOW_PRIORITY}>low</option>
-              <option value={TaskPriority.MEDIUM_PRIORITY}>medium</option>
-              <option value={TaskPriority.HIGH_PRIORITY}>high</option>
-              <option value={TaskPriority.HIGHEST_PRIORITY}>highest</option>
-            </select>
-            <button onClick={handleCreateTask} style={{ marginLeft: 8 }}>
-              Create Task
-            </button>
-          </div>
-        )}
         <div>
           <div
             key={task._id}
@@ -195,10 +163,47 @@ const Tasks: React.FC = () => {
   );
 
   return (
-    <div style={{ display: "flex", gap: 20, padding: 24 }}>
-      {renderColumn("TODO", "TO DO")}
-      {renderColumn("IN_PROGRESS", "IN PROGRESS")}
-      {renderColumn("COMPLETED", "COMPLETED")}
+    <div>
+      {boardId && (
+        <div style={{ padding: 20 }}>
+          <h2>Create New Task</h2>
+          <input
+            placeholder="Title"
+            value={taskTitle}
+            onChange={(e) => setTaskTitle(e.target.value)}
+            style={{ marginRight: 8 }}
+          />
+          <input
+            placeholder="Description"
+            value={taskDesc}
+            onChange={(e) => setTaskDesc(e.target.value)}
+            style={{ marginRight: 8 }}
+          />
+          <input
+            type="datetime-local"
+            value={taskDueDate ? taskDueDate.toISOString().slice(0, 16) : ""}
+            onChange={(e) => setTaskDueDate(new Date(e.target.value))}
+            style={{ marginRight: 8 }}
+          />
+          <select
+            value={taskPriority}
+            onChange={(e) => setTaskPriority(e.target.value as TaskPriority)}
+          >
+            <option value={TaskPriority.LOW_PRIORITY}>low</option>
+            <option value={TaskPriority.MEDIUM_PRIORITY}>medium</option>
+            <option value={TaskPriority.HIGH_PRIORITY}>high</option>
+            <option value={TaskPriority.HIGHEST_PRIORITY}>highest</option>
+          </select>
+          <button onClick={handleCreateTask} style={{ marginLeft: 8 }}>
+            Create Task
+          </button>
+        </div>
+      )}
+      <div style={{ display: "flex", gap: 20, padding: 24 }}>
+        {renderColumn("TODO", "TO DO")}
+        {renderColumn("IN_PROGRESS", "IN PROGRESS")}
+        {renderColumn("COMPLETED", "COMPLETED")}
+      </div>
     </div>
   );
 };

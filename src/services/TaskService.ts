@@ -41,8 +41,15 @@ class TaskService {
     return response.data;
   }
 
-  public async updateTask(taskId: string, input: TaskUpdate) {
-    const response = await axios.post(`/task/updateTask/${taskId}`, input, {
+  public async updateTask(input: TaskUpdate) {
+    const url = `http://localhost:3001/task/updateTask`;
+
+    const accessToken = localStorage.getItem("accessToken");
+
+    const response = await axios.post(url, input, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
       withCredentials: true,
     });
     return response.data;
