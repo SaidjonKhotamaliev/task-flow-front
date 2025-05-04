@@ -48,7 +48,7 @@ const Login = () => {
         <h2>Task Flow</h2>
       </Stack>
       <Stack>
-        <h2>Signup</h2>
+        <h2>Login</h2>
         <input
           placeholder="USERNAME"
           onChange={(e) => setUserName(e.target.value)}

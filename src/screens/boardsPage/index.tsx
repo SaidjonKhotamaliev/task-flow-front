@@ -67,8 +67,13 @@ const BoardsScreen: React.FC = () => {
   };
 
   useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+
+    if (!accessToken) {
+      navigate("/user/login");
+    }
     fetchBoards();
-  }, []);
+  }, [navigate]);
 
   return (
     <div style={{ padding: 20 }}>
