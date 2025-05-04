@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { boardService } from "../../services/BoardService";
 import { Board } from "../../libs/types/board";
-import { Stack } from "@mui/material";
+import { Stack, Button, TextField, Typography, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const BoardsScreen: React.FC = () => {
@@ -76,61 +76,113 @@ const BoardsScreen: React.FC = () => {
   }, [navigate]);
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>My Boards</h2>
-      <Stack>
-        <input
-          type="text"
-          placeholder="New board title"
+    <Box sx={{ padding: 4, backgroundColor: "#f4f7fc", minHeight: "100vh" }}>
+      <Typography variant="h4" gutterBottom align="center">
+        My Boards
+      </Typography>
+
+      <Stack
+        direction="row"
+        spacing={2}
+        justifyContent="center"
+        marginBottom={3}
+      >
+        <TextField
+          variant="outlined"
+          label="New Board Title"
           value={newTitle}
           onChange={(e) => setNewTitle(e.target.value)}
+          fullWidth
         />
-        <button onClick={handleCreate}>Create</button>
+        <Button variant="contained" color="primary" onClick={handleCreate}>
+          Create
+        </Button>
       </Stack>
 
-      <ul>
+      <Stack spacing={2} alignItems="center">
         {boards.length === 0 ? (
-          <li>No boards found</li>
+          <Typography variant="body1" color="textSecondary">
+            No boards found
+          </Typography>
         ) : (
           boards.map((board) => (
-            <li key={board._id}>
+            <Stack
+              key={board._id}
+              direction="row"
+              spacing={2}
+              alignItems="center"
+              justifyContent="space-between"
+              sx={{
+                backgroundColor: "#fff",
+                padding: "10px",
+                borderRadius: "8px",
+                boxShadow: 1,
+                width: "100%",
+                maxWidth: "500px",
+              }}
+            >
               {editingBoardId === board._id ? (
                 <>
-                  <input
-                    type="text"
+                  <TextField
+                    variant="outlined"
                     value={newBoardTitle}
                     onChange={(e) => setNewBoardTitle(e.target.value)}
+                    fullWidth
                   />
-                  <button onClick={handleUpdate}>Save</button>
-                  <button onClick={() => setEditingBoardId(null)}>
-                    Cancel
-                  </button>
+                  <Stack direction="row" spacing={1}>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={handleUpdate}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      onClick={() => setEditingBoardId(null)}
+                    >
+                      Cancel
+                    </Button>
+                  </Stack>
                 </>
               ) : (
                 <>
-                  <span
-                    style={{
+                  <Typography
+                    variant="h6"
+                    sx={{
                       cursor: "pointer",
                       textDecoration: "underline",
-                      marginRight: "10px",
                     }}
                     onClick={() =>
                       navigate(`/task/getMyTasks?boardId=${board._id}`)
                     }
                   >
                     {board.boardTitle}
-                  </span>
-                  <button onClick={() => handleEditClick(board)}>Edit</button>
-                  <button onClick={() => handleDelete(board._id)}>
-                    Delete
-                  </button>
+                  </Typography>
+                  <Stack direction="row" spacing={1}>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => handleEditClick(board)}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      onClick={() => handleDelete(board._id)}
+                    >
+                      Delete
+                    </Button>
+                  </Stack>
                 </>
               )}
-            </li>
+            </Stack>
           ))
         )}
-      </ul>
-    </div>
+      </Stack>
+    </Box>
   );
 };
 
