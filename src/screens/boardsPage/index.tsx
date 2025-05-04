@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { boardService } from "../../services/BoardService";
 import { Board } from "../../libs/types/board";
 import { Stack } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const BoardsScreen: React.FC = () => {
+  const navigate = useNavigate();
   const [boards, setBoards] = useState<Board[]>([]);
   const [newTitle, setNewTitle] = useState("");
   const [editingBoardId, setEditingBoardId] = useState<string | null>(null);
@@ -101,7 +103,18 @@ const BoardsScreen: React.FC = () => {
                 </>
               ) : (
                 <>
-                  {board.boardTitle}
+                  <span
+                    style={{
+                      cursor: "pointer",
+                      textDecoration: "underline",
+                      marginRight: "10px",
+                    }}
+                    onClick={() =>
+                      navigate(`/task/getMyTasks?boardId=${board._id}`)
+                    }
+                  >
+                    {board.boardTitle}
+                  </span>
                   <button onClick={() => handleEditClick(board)}>Edit</button>
                   <button onClick={() => handleDelete(board._id)}>
                     Delete

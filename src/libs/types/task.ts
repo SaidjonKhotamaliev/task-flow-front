@@ -1,31 +1,31 @@
 import { TaskPriority, TaskStatus } from "../enums/task.enum";
 
-export interface taskInput {
+export interface TaskInput {
   taskTitle: string;
   taskDesc: string;
   taskStatus?: TaskStatus;
   taskPriority: TaskPriority;
-  taskDueDate: Date;
+  taskDueDate: string;
   boardId: string;
 }
 
-export interface taskUpdate {
-  _id: string;
+export interface TaskUpdate {
   taskTitle?: string;
   taskDesc?: string;
   taskStatus?: TaskStatus;
   taskPriority?: TaskPriority;
   taskDueDate?: Date;
-  boardId: string;
+  boardId?: string;
 }
 
 export interface Task {
+  _id: string;
   taskTitle: string;
   taskDesc: string;
   taskStatus: TaskStatus;
   taskPriority: TaskPriority;
   boardId: string;
-  dueDate: Date;
+  taskDueDate: Date;
   createdAt?: Date;
   updatedAt?: Date;
 }

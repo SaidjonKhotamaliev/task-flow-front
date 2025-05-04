@@ -1,10 +1,10 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import logo from "./logo.svg";
 import "./App.css";
 import Signup from "./screens/signUpPage";
 import Login from "./screens/loginPage";
 import Boards from "./screens/boardsPage";
+import Tasks from "./screens/tasksPage";
 
 function App() {
   return (
@@ -13,7 +13,8 @@ function App() {
         <Route path="/user/login" element={<Login />} />
         <Route path="/user/signup" element={<Signup />} />
         <Route path="/board/my-boards" element={<Boards />} />
-        <Route path="/" element={<Signup />} />
+        <Route path="/task/getMyTasks" element={<Tasks />} />
+        <Route path="/" element={<Boards />} />
       </Routes>
     </BrowserRouter>
   );
